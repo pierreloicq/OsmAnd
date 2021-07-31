@@ -1,11 +1,7 @@
 package net.osmand.plus.chooseplan;
 
-import static net.osmand.plus.liveupdates.LiveUpdatesSettingsBottomSheet.getActiveColorId;
-
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,19 +16,18 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener;
 
-import net.osmand.AndroidUtils;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.R;
 import net.osmand.plus.UiUtilities;
 import net.osmand.plus.activities.MapActivity;
 import net.osmand.plus.base.BaseOsmAndDialogFragment;
+import net.osmand.plus.chooseplan.button.ButtonUiUtilities;
 import net.osmand.plus.inapp.InAppPurchaseHelper;
 import net.osmand.plus.inapp.InAppPurchaseHelper.InAppPurchaseListener;
 import net.osmand.plus.inapp.InAppPurchaseHelper.InAppPurchaseTaskType;
@@ -49,24 +44,13 @@ public abstract class BasePurchaseDialogFragment extends BaseOsmAndDialogFragmen
 	protected AppBarLayout appBar;
 	protected NestedScrollView scrollView;
 	protected LayoutInflater themedInflater;
+	protected ButtonUiUtilities buttonUtilities;
 
 	protected boolean nightMode;
 	protected boolean usedOnMap;
 
 	private int lastScrollY;
 	private int lastKnownToolbarOffset;
-
-	public enum ButtonBackground {
-		ROUNDED(R.drawable.rectangle_rounded),
-		ROUNDED_SMALL(R.drawable.rectangle_rounded_small),
-		ROUNDED_LARGE(R.drawable.rectangle_rounded_large);
-
-		ButtonBackground(int drawableId) {
-			this.drawableId = drawableId;
-		}
-
-		public int drawableId;
-	}
 
 	@ColorRes
 	protected int getStatusBarColorId() {
@@ -81,6 +65,7 @@ public abstract class BasePurchaseDialogFragment extends BaseOsmAndDialogFragmen
 		usedOnMap = getMapActivity() != null;
 		nightMode = isNightMode(usedOnMap);
 		themedInflater = UiUtilities.getInflater(getMyActivity(), nightMode);
+		buttonUtilities = new ButtonUiUtilities(app, nightMode);
 	}
 
 	@NonNull
@@ -228,44 +213,6 @@ public abstract class BasePurchaseDialogFragment extends BaseOsmAndDialogFragmen
 
 	protected void updateToolbar() {
 		updateToolbar(lastKnownToolbarOffset);
-	}
-
-	protected void setupRoundedBackground(@NonNull View view, ButtonBackground background) {
-		setupRoundedBackground(view, ContextCompat.getColor(app, getActiveColorId(nightMode)), background);
-	}
-
-	protected void setupRoundedBackground(@NonNull View view, @ColorInt int color, ButtonBackground background) {
-		Drawable normal = createRoundedDrawable(UiUtilities.getColorWithAlpha(color, 0.1f), background);
-		setupRoundedBackground(view, normal, color, background);
-	}
-
-	protected void setupRoundedBackground(@NonNull View view, @NonNull Drawable normal,
-										  @ColorInt int color, ButtonBackground background) {
-		Drawable selected = createRoundedDrawable(UiUtilities.getColorWithAlpha(color, 0.5f), background);
-		setupRoundedBackground(view, normal, selected);
-	}
-
-	protected void setupRoundedBackground(@NonNull View view, @NonNull Drawable normal, @NonNull Drawable selected) {
-		Drawable background;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			background = UiUtilities.getLayeredIcon(normal, getRippleDrawable());
-		} else {
-			background = AndroidUtils.createPressedStateListDrawable(normal, selected);
-		}
-		AndroidUtils.setBackground(view, background);
-	}
-
-	protected Drawable getActiveStrokeDrawable() {
-		return app.getUIUtilities().getIcon(nightMode ? R.drawable.btn_background_stroked_active_dark : R.drawable.btn_background_stroked_active_light);
-	}
-
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	protected Drawable getRippleDrawable() {
-		return AppCompatResources.getDrawable(app, nightMode ? R.drawable.purchase_button_ripple_dark : R.drawable.purchase_button_ripple_light);
-	}
-
-	protected Drawable createRoundedDrawable(@ColorInt int color, ButtonBackground background) {
-		return UiUtilities.createTintedDrawable(app, background.drawableId, color);
 	}
 
 	@ColorInt

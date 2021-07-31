@@ -1,10 +1,8 @@
 package net.osmand.plus.osmedit;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +15,6 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -32,7 +29,8 @@ import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.R;
 import net.osmand.plus.UiUtilities;
 import net.osmand.plus.base.BaseOsmAndFragment;
-import net.osmand.plus.chooseplan.BasePurchaseDialogFragment.ButtonBackground;
+import net.osmand.plus.chooseplan.button.ButtonBackground;
+import net.osmand.plus.chooseplan.button.ButtonUiUtilities;
 import net.osmand.plus.settings.backend.OsmandSettings;
 import net.osmand.util.Algorithms;
 
@@ -63,6 +61,7 @@ public class MappersFragment extends BaseOsmAndFragment {
 
 	private OsmandApplication app;
 	private OsmandSettings settings;
+	protected ButtonUiUtilities buttonUtilities;
 	private Map<String, Contribution> changesInfo = new TreeMap<>();
 
 	private View mainView;
@@ -91,6 +90,7 @@ public class MappersFragment extends BaseOsmAndFragment {
 		app = requireMyApplication();
 		settings = app.getSettings();
 		nightMode = !app.getSettings().isLightContent();
+		buttonUtilities = new ButtonUiUtilities(app, nightMode);
 
 		requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
 			@Override
@@ -229,28 +229,9 @@ public class MappersFragment extends BaseOsmAndFragment {
 	}
 
 	private void setupButtonBackground(@NonNull View button, @ColorInt int normalColor, @ColorInt int pressedColor) {
-		Drawable normal = createRoundedDrawable(normalColor, ButtonBackground.ROUNDED);
-		Drawable pressed = createRoundedDrawable(pressedColor, ButtonBackground.ROUNDED);
-		setupRoundedBackground(button, normal, pressed);
-	}
-
-	protected Drawable createRoundedDrawable(@ColorInt int color, ButtonBackground background) {
-		return UiUtilities.createTintedDrawable(app, background.drawableId, color);
-	}
-
-	protected void setupRoundedBackground(@NonNull View view, @NonNull Drawable normal, @NonNull Drawable selected) {
-		Drawable background;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			background = UiUtilities.getLayeredIcon(normal, getRippleDrawable());
-		} else {
-			background = AndroidUtils.createPressedStateListDrawable(normal, selected);
-		}
-		AndroidUtils.setBackground(view, background);
-	}
-
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	protected Drawable getRippleDrawable() {
-		return AppCompatResources.getDrawable(app, nightMode ? R.drawable.purchase_button_ripple_dark : R.drawable.purchase_button_ripple_light);
+		Drawable normal = buttonUtilities.createRoundedDrawable(normalColor, ButtonBackground.ROUNDED);
+		Drawable pressed = buttonUtilities.createRoundedDrawable(pressedColor, ButtonBackground.ROUNDED);
+		buttonUtilities.setupRoundedBackground(button, normal, pressed);
 	}
 
 	@ColorRes

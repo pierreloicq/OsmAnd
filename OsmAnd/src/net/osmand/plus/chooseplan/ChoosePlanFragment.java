@@ -29,6 +29,7 @@ import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.R;
 import net.osmand.plus.UiUtilities;
 import net.osmand.plus.Version;
+import net.osmand.plus.chooseplan.button.ButtonBackground;
 import net.osmand.plus.chooseplan.button.PriceButton;
 import net.osmand.plus.helpers.AndroidUiHelper;
 import net.osmand.plus.routepreparationmenu.cards.BaseCard;
@@ -137,7 +138,7 @@ public class ChoosePlanFragment extends BasePurchaseDialogFragment implements Ca
 
 		FrameLayout iconBg = mainView.findViewById(R.id.header_icon_background);
 		int color = AndroidUtils.getColorFromAttr(mainView.getContext(), R.attr.purchase_sc_header_icon_bg);
-		AndroidUtils.setBackground(iconBg, createRoundedDrawable(color, ButtonBackground.ROUNDED_LARGE));
+		AndroidUtils.setBackground(iconBg, buttonUtilities.createRoundedDrawable(color, ButtonBackground.ROUNDED_LARGE));
 	}
 
 	@Override
@@ -159,7 +160,7 @@ public class ChoosePlanFragment extends BasePurchaseDialogFragment implements Ca
 	private void setupLaterButton() {
 		View button = mainView.findViewById(R.id.button_later);
 		button.setOnClickListener(v -> dismiss());
-		setupRoundedBackground(button, ButtonBackground.ROUNDED_SMALL);
+		buttonUtilities.setupRoundedBackground(button, ButtonBackground.ROUNDED_SMALL);
 	}
 
 	private void createTroubleshootingCard() {
@@ -262,7 +263,7 @@ public class ChoosePlanFragment extends BasePurchaseDialogFragment implements Ca
 		ImageView ivIcon = view.findViewById(R.id.icon);
 		ivIcon.setImageResource(iconId);
 
-		setupRoundedBackground(view, colorNoAlpha, ButtonBackground.ROUNDED_SMALL);
+		buttonUtilities.setupRoundedBackground(view, colorNoAlpha, ButtonBackground.ROUNDED_SMALL);
 		view.setOnClickListener(listener);
 		view.setEnabled(available);
 	}

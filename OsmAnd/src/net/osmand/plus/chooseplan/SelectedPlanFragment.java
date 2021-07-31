@@ -27,6 +27,7 @@ import net.osmand.PlatformUtil;
 import net.osmand.plus.R;
 import net.osmand.plus.UiUtilities;
 import net.osmand.plus.Version;
+import net.osmand.plus.chooseplan.button.ButtonBackground;
 import net.osmand.plus.chooseplan.button.PriceButton;
 import net.osmand.plus.wikipedia.WikipediaDialogFragment;
 import net.osmand.util.Algorithms;
@@ -258,7 +259,7 @@ public abstract class SelectedPlanFragment extends BasePurchaseDialogFragment {
 			if (key.equals(selectedPriceButton)) {
 				ivCheckmark.setImageDrawable(getCheckmark());
 
-				Drawable stroke = getActiveStrokeDrawable();
+				Drawable stroke = buttonUtilities.getActiveStrokeDrawable();
 				int colorWithAlpha = UiUtilities.getColorWithAlpha(colorNoAlpha, 0.1f);
 
 				Drawable bgDrawable = app.getUIUtilities().getPaintedIcon(R.drawable.rectangle_rounded, colorWithAlpha);
@@ -268,7 +269,7 @@ public abstract class SelectedPlanFragment extends BasePurchaseDialogFragment {
 				ivCheckmark.setImageDrawable(getEmptyCheckmark());
 				normal = new ColorDrawable(Color.TRANSPARENT);
 			}
-			setupRoundedBackground(itemView, normal, colorNoAlpha, ButtonBackground.ROUNDED);
+			buttonUtilities.setupRoundedBackground(itemView, normal, colorNoAlpha, ButtonBackground.ROUNDED);
 		}
 
 		if (selectedPriceButton != null) {
@@ -291,8 +292,8 @@ public abstract class SelectedPlanFragment extends BasePurchaseDialogFragment {
 		});
 
 		int activeColor = ContextCompat.getColor(app, getActiveColorId(nightMode));
-		Drawable normal = createRoundedDrawable(activeColor, ButtonBackground.ROUNDED_SMALL);
-		setupRoundedBackground(itemView, normal, activeColor, ButtonBackground.ROUNDED_SMALL);
+		Drawable normal = buttonUtilities.createRoundedDrawable(activeColor, ButtonBackground.ROUNDED_SMALL);
+		buttonUtilities.setupRoundedBackground(itemView, normal, activeColor, ButtonBackground.ROUNDED_SMALL);
 	}
 
 	private void setupDescription() {
@@ -311,7 +312,7 @@ public abstract class SelectedPlanFragment extends BasePurchaseDialogFragment {
 	private void setupRestoreButton() {
 		View button = mainView.findViewById(R.id.button_restore);
 		button.setOnClickListener(v -> purchaseHelper.requestInventory());
-		setupRoundedBackground(button, ButtonBackground.ROUNDED_SMALL);
+		buttonUtilities.setupRoundedBackground(button, ButtonBackground.ROUNDED_SMALL);
 	}
 
 	private void createIncludesList() {
@@ -354,7 +355,7 @@ public abstract class SelectedPlanFragment extends BasePurchaseDialogFragment {
 				R.color.maps_plus_item_bg :
 				R.color.osmand_pro_item_bg);
 		int color = UiUtilities.getColorWithAlpha(iconBgColor, 0.2f);
-		AndroidUtils.setBackground(itemView.findViewById(R.id.icon_background), createRoundedDrawable(color, ButtonBackground.ROUNDED));
+		AndroidUtils.setBackground(itemView.findViewById(R.id.icon_background), buttonUtilities.createRoundedDrawable(color, ButtonBackground.ROUNDED));
 	}
 
 	protected Drawable getCheckmark() {
